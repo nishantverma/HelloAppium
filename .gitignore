@@ -1,0 +1,9 @@
+.gradle/
+.idea/
+*.iml
+*.class
+.DS_Store
+target/
+build
+dump.rdb
+generated-test-sources/
