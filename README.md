@@ -5,3 +5,6 @@ You can just check out and run the project from IntelliJ.
 
 This project should run on both the Windows and Mac machines.
 Let me know if you find issues.
+
+
+Happy Coding !
