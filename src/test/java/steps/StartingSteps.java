@@ -10,9 +10,14 @@ import io.appium.java_client.service.local.flags.GeneralServerFlag;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -34,23 +39,59 @@ public class StartingSteps extends BaseSteps {
 
         capabilities.setCapability("fullReset", true);
         capabilities.setCapability("noReset", false);
+        capabilities.setCapability("autoGrantPermissions", true);
         capabilities.setCapability("app", "/Users/nishant/Development/HelloAppium/app/quikr.apk");
 
         driver = new AndroidDriver(new URL("http://0.0.0.0:4723/wd/hub"), capabilities);
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
     }
 
+    public List<String> attachedDevicesAndEmulators() {
+        List<String> devices = new ArrayList<>();
+        String line;
+        StringBuilder log = new StringBuilder();
+        Process process;
+        Runtime rt = Runtime.getRuntime();
+        try {
+            process = rt.exec("adb devices -l");
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(
+                    process.getInputStream()));
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(
+                    process.getErrorStream()));
+
+
+            while ((line = stdInput.readLine()) != null) {
+                log.append(line);
+                log.append(System.getProperty("line.separator"));
+            }
+            while ((line = stdError.readLine()) != null) {
+                log.append(line);
+                log.append(System.getProperty("line.separator"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Scanner scan = new Scanner(String.valueOf(log));
+        while (scan.hasNextLine()) {
+            String oneLine = scan.nextLine();
+            if (oneLine.contains("model")) {
+                devices.add(oneLine.split("device")[0].trim());
+            }
+        }
+        return devices;
+    }
+
     private void startAppiumService() {
         int port = 4723;
         String nodeJS_Path = "C:/Program Files/Appium/node.exe";
         String appiumJS_Path = "C:/Program Files/Appium/node_modules/appium/bin/appium.js";
-        String udid = null;
+        String udid = attachedDevicesAndEmulators().get(0);
 
         String osName = System.getProperty("os.name");
 
         if (osName.contains("Mac")) {
             appiumService = AppiumDriverLocalService.buildService(new AppiumServiceBuilder()
-                    .usingDriverExecutable(new File(("/usr/local/bin/node")))
+                    .usingDriverExecutable(new File("/usr/local/bin/node"))
                     .withAppiumJS(new File(("/usr/local/bin/appium")))
                     .withIPAddress("0.0.0.0")
                     .usingPort(port)

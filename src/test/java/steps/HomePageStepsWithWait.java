@@ -19,7 +19,6 @@ public class HomePageStepsWithWait extends BaseSteps{
     @When("^I launch Quikr app$")
     public void iLaunchQuikrApp() throws Throwable {
         System.out.println("Hello World " + driver.getAutomationName());
-
     }
 
     @And("^I choose to log in using Google$")
@@ -70,9 +69,7 @@ public class HomePageStepsWithWait extends BaseSteps{
     @And("^I tap on \"([^\"]*)\"$")
     public void iTapOn(String arg0) throws Throwable {
         TouchAction action = new TouchAction(driver);
-
     }
-
 
     @Then("^I should see the first car search result with \"([^\"]*)\"$")
     public void iShouldSeeTheFirstCarSearchResultWith(String searchInput) throws Throwable {
