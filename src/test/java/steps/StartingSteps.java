@@ -72,12 +72,12 @@ public class StartingSteps extends BaseSteps {
     @After
     public void tearDown(Scenario scenario) {
         try {
-            appiumService.stop();
             if (scenario.isFailed()) {
                 final byte[] screenshot = driver
                         .getScreenshotAs(OutputType.BYTES);
                 scenario.embed(screenshot, "image/png");
             }
+            driver.quit();
         } catch (Exception e) {
             System.out.println("Exception while running Tear down :" + e.getMessage());
         }
